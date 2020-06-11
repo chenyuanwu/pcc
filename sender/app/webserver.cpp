@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
     UDT::setsockopt(fhandle, 0, UDT_CC, new CCCFactory<BBCC>, sizeof(CCCFactory<BBCC>));
 
 #ifndef WIN32
-    pthread_create(new pthread_t, NULL, monitor, &fhandle);
+    //pthread_create(new pthread_t, NULL, monitor, &fhandle);
 #else
     CreateThread(NULL, 0, monitor, &client, 0, NULL);
 #endif
