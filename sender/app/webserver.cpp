@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
     getnameinfo((sockaddr *)&clientaddr, addrlen, clienthost, sizeof(clienthost), clientservice, sizeof(clientservice), NI_NUMERICHOST|NI_NUMERICSERV);
     cout << "new connection: " << clienthost << ":" << clientservice << endl;
 
-    //UDT::setsockopt(fhandle, 0, UDT_CC, new CCCFactory<BBCC>, sizeof(CCCFactory<BBCC>));
+    UDT::setsockopt(fhandle, 0, UDT_CC, new CCCFactory<BBCC>, sizeof(CCCFactory<BBCC>));
 
 #ifndef WIN32
     pthread_create(new pthread_t, NULL, monitor, &fhandle);
@@ -124,7 +124,11 @@ int main(int argc, char* argv[])
     // send the file
     int64_t offset = 0;
 
-    UDT::sendfile(fhandle, ifs, offset, size);
+    if (UDT::ERROR == UDT::sendfile(fhandle, ifs, offset, size))
+    {
+        cout << "sendfile: " << UDT::getlasterror().getErrorMessage() << endl;
+        return 0;
+    }
     UDT::perfmon(fhandle, &trace);
     cout<<"sentsize is "<<trace.pktTotalBytes<<endl;
     UDT::close(fhandle);
