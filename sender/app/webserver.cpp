@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
 
     cout << "server is ready at port: " << service << endl;
 
-    UDT::listen(serv, 1);
+    UDT::listen(serv, 10);
 
     sockaddr_storage clientaddr;
     int addrlen = sizeof(clientaddr);
@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
     getnameinfo((sockaddr *)&clientaddr, addrlen, clienthost, sizeof(clienthost), clientservice, sizeof(clientservice), NI_NUMERICHOST|NI_NUMERICSERV);
     cout << "new connection: " << clienthost << ":" << clientservice << endl;
 
-    UDT::setsockopt(fhandle, 0, UDT_CC, new CCCFactory<BBCC>, sizeof(CCCFactory<BBCC>));
+    //UDT::setsockopt(fhandle, 0, UDT_CC, new CCCFactory<BBCC>, sizeof(CCCFactory<BBCC>));
 
 #ifndef WIN32
     pthread_create(new pthread_t, NULL, monitor, &fhandle);
