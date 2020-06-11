@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    UDTSOCKET fhandle = UDT::socket(local.ai_family, local.ai_socktype, local.ai_protocol);
+    UDTSOCKET fhandle = UDT::socket(local->ai_family, local->ai_socktype, local->ai_protocol);
 
     freeaddrinfo(local);
 
