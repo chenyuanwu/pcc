@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
     UDT::setsockopt(fhandle, 0, UDT_CC, new CCCFactory<BBCC>, sizeof(CCCFactory<BBCC>));
 
 #ifndef WIN32
-    //pthread_create(new pthread_t, NULL, monitor, &fhandle);
+    pthread_create(new pthread_t, NULL, monitor, &fhandle);
 #else
     CreateThread(NULL, 0, monitor, &client, 0, NULL);
 #endif
@@ -100,8 +100,8 @@ int main(int argc, char* argv[])
     BBCC* cchandle = NULL;
     int temp;
     UDT::getsockopt(fhandle, 0, UDT_CC, &cchandle, &temp);
-    if (NULL != cchandle)
-        cchandle->setRate(1);
+//    if (NULL != cchandle)
+//        cchandle->setRate(1);
 
     char file[1024];
     strcpy(file,argv[1]);
@@ -111,19 +111,21 @@ int main(int argc, char* argv[])
     int64_t size = ifs.tellg();
     ifs.seekg(0, ios::beg);
     cout<<"size is "<<size<<endl;
+
+    int64_t sent_size;
     // send file size information
-    if (UDT::ERROR == UDT::send(fhandle, (char*)&size, sizeof(int64_t), 0))
+    if (UDT::ERROR == (sent_size = UDT::send(fhandle, (char*)&size, sizeof(int64_t), 0)))
     {
         cout << "send: " << UDT::getlasterror().getErrorMessage() << endl;
         return 0;
     }
+    cout<<"sentsize is"<<sent_size<<endl;
 
     UDT::TRACEINFO trace;
     UDT::perfmon(fhandle, &trace);
 
     // send the file
     int64_t offset = 0;
-    int64_t sent_size;
 
     if (UDT::ERROR == (sent_size = UDT::sendfile(fhandle, ifs, offset, size)))
     {
