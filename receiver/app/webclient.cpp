@@ -23,14 +23,24 @@ int main(int argc, char* argv[])
     // use this function to initialize the UDT library
     UDT::startup();
 
-    struct addrinfo hints, *peer;
+    struct addrinfo hints, *local, *peer;
 
     memset(&hints, 0, sizeof(struct addrinfo));
+
     hints.ai_flags = AI_PASSIVE;
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
+    //hints.ai_socktype = SOCK_DGRAM;
 
-    UDTSOCKET fhandle = UDT::socket(hints.ai_family, hints.ai_socktype, hints.ai_protocol);
+    if (0 != getaddrinfo(NULL, "9000", &hints, &local))
+    {
+        cout << "incorrect network address.\n" << endl;
+        return 0;
+    }
+
+    UDTSOCKET fhandle = UDT::socket(local.ai_family, local.ai_socktype, local.ai_protocol);
+
+    freeaddrinfo(local);
 
     if (0 != getaddrinfo(argv[1], argv[2], &hints, &peer))
     {
