@@ -38,13 +38,15 @@ endif
 
 DIR = $(shell pwd)
 
-APP = incast_client appclient sendfile recvfile 
+APP = webserver incast_client appclient sendfile recvfile
 
 all: $(APP)
 
 %.o: %.cpp
 	$(C++) $(CCFLAGS) $< -c
 
+webserver: webserver.o
+	$(C++) $^ -o $@ $(LDFLAGS)
 appserver: appserver.o
 	$(C++) $^ -o $@ $(LDFLAGS)
 appclient: appclient.o
