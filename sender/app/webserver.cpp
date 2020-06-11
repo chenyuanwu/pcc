@@ -123,14 +123,15 @@ int main(int argc, char* argv[])
 
     // send the file
     int64_t offset = 0;
+    int64_t sent_size;
 
-    if (UDT::ERROR == UDT::sendfile(fhandle, ifs, offset, size))
+    if (UDT::ERROR == (sent_size = UDT::sendfile(fhandle, ifs, offset, size)))
     {
         cout << "sendfile: " << UDT::getlasterror().getErrorMessage() << endl;
         return 0;
     }
     UDT::perfmon(fhandle, &trace);
-    cout<<"sentsize is "<<trace.pktTotalBytes<<endl;
+    cout<<"sentsize is "<<sent_size<<"; measured is "<<trace.pktTotalBytes<<endl;
     UDT::close(fhandle);
 
     // use this function to release the UDT library
